@@ -74,7 +74,7 @@ def main():
 
         if not os.path.exists(final_directory):
             os.makedirs(final_directory)
-        open(os.path.join(package_name, filename), "wb").write(file.content)
+        open(os.path.join(final_directory, filename), "wb").write(file.content)
 
 
     for apk_url in download_version_list:
