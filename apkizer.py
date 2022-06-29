@@ -68,7 +68,8 @@ def main():
         filename = soup.find("span", {"class": "file"}).text.rsplit(' ', 2)[0].replace(" ", "_").lower()
         print(filename + " is downloading, please wait..")
         current_directory = os.getcwd()
-        final_directory = os.path.join(out, package_name)
+        # final_directory = os.path.join(out, package_name)
+        final_directory = out
 
         if not os.path.exists(final_directory):
             os.makedirs(final_directory)
