@@ -6,13 +6,12 @@ import argparse
 from requests.models import Response
 import cloudscraper
 import os
+import zipfile
 
-import ssl
-
-ssl._create_default_https_context = ssl._create_unverified_context
 
 def main():
-    parser = argparse.ArgumentParser(description='Download all versions of an Android mobile application from apkpure.com')
+    parser = argparse.ArgumentParser(
+        description='Download all versions of an Android mobile application from apkpure.com')
     required = parser.add_argument_group('required arguments')
     required.add_argument('-p', required=True, metavar="packagename", help="example: com.twitter.android")
     required.add_argument('--first', required=False, metavar="first", default=True, help="example: true")
@@ -32,7 +31,7 @@ def main():
     a_elements = soup.find_all("a")
 
     for element in a_elements:
-        #print(element.attrs["href"])
+        # print(element.attrs["href"])
         if "href" in element.attrs and element.attrs["href"] != None and package_name in element.attrs["href"]:
             if "/" in element.attrs["href"] and element.attrs["href"].split("/")[-1] == package_name:
                 package_url = element.attrs["href"]
@@ -53,7 +52,7 @@ def main():
     response = scraper.get(base_url + package_url + "/versions").text
     soup = bs4.BeautifulSoup(response, "html.parser")
 
-    versions_elements_div = soup.find("ul", attrs={"class":"ver-wrap"})
+    versions_elements_div = soup.find("ul", attrs={"class": "ver-wrap"})
     versions_elements_li = versions_elements_div.findAll("li", recursive=False)
 
     for list_item in versions_elements_li:
@@ -68,14 +67,23 @@ def main():
         download_link = soup.find("iframe", {"id": "iframe_download"}).attrs["src"]
         filename = soup.find("span", {"class": "file"}).text.rsplit(' ', 2)[0].replace(" ", "_").lower()
         print(filename + " is downloading, please wait..")
-        file = scraper.get(download_link)
         current_directory = os.getcwd()
         final_directory = os.path.join(out, package_name)
 
         if not os.path.exists(final_directory):
             os.makedirs(final_directory)
-        open(os.path.join(final_directory, filename), "wb").write(file.content)
 
+        filename = os.path.join(final_directory, filename)
+
+        if os.path.exists(filename) and zipfile.ZipFile(filename).testzip():
+            return
+
+        # delete file if it exists
+        if os.path.exists(filename):
+            os.remove(filename)
+
+        file = scraper.get(download_link)
+        open(filename, "wb").write(file.content)
 
     for apk_url in download_version_list:
         download_page = scraper.get(base_url + apk_url).text
@@ -93,6 +101,7 @@ def main():
             break
     print("All APK's are downloaded!")
 
+
 def banner():
     print("""
 
@@ -107,4 +116,6 @@ def banner():
                     by ko2sec, v1.0
     """)
     main()
+
+
 banner()
