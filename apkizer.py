@@ -7,6 +7,9 @@ from requests.models import Response
 import cloudscraper
 import os
 
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def main():
     parser = argparse.ArgumentParser(description='Download all versions of an Android mobile application from apkpure.com')
@@ -15,9 +18,10 @@ def main():
     required.add_argument('--first', required=False, metavar="first", default=True, help="example: true")
     args = parser.parse_args()
 
-    scraper = cloudscraper.create_scraper(delay=10) 
+    scraper = cloudscraper.create_scraper(delay=10)
     base_url = "https://apkpure.com"
     package_name = args.p
+    first = args.first
     package_url = ""
     download_version_list = []
     response = scraper.get("https://apkpure.com/tr/search?q=" + package_name).text
@@ -29,8 +33,8 @@ def main():
         #print(element.attrs["href"])
         if "href" in element.attrs and element.attrs["href"] != None and package_name in element.attrs["href"]:
             if "/" in element.attrs["href"] and element.attrs["href"].split("/")[-1] == package_name:
-                package_url = element.attrs["href"]             
-    
+                package_url = element.attrs["href"]
+
     if package_url == "":
         if "Cloudflare Ray ID" in response:
             print("Cloudflare protection could not be bypassed, trying again..")
@@ -89,15 +93,15 @@ def main():
 
 def banner():
     print("""
-    
-               _     _                 
-              | |   (_)                
-  __ _  _ __  | | __ _  ____ ___  _ __ 
+
+               _     _
+              | |   (_)
+  __ _  _ __  | | __ _  ____ ___  _ __
  / _` || '_ \ | |/ /| ||_  // _ \| '__|
-| (_| || |_) ||   < | | / /|  __/| |   
- \__,_|| .__/ |_|\_\|_|/___|\___||_|   
-       | |                             
-       |_|                             
+| (_| || |_) ||   < | | / /|  __/| |
+ \__,_|| .__/ |_|\_\|_|/___|\___||_|
+       | |
+       |_|
                     by ko2sec, v1.0
     """)
     main()
