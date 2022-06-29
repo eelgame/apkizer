@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser(description='Download all versions of an Android mobile application from apkpure.com')
     required = parser.add_argument_group('required arguments')
     required.add_argument('-p', required=True, metavar="packagename", help="example: com.twitter.android")
+    required.add_argument('--first', required=False, metavar="first", default=True, help="example: true")
     args = parser.parse_args()
 
     scraper = cloudscraper.create_scraper(delay=10) 
@@ -82,6 +83,8 @@ def main():
             apk_url = soup.find("div", {"class": "table-cell down"}).find("a").attrs["href"]
             download_page = scraper.get(base_url + apk_url).text
         download_apk(download_page)
+        if first:
+            break
     print("All APK's are downloaded!")
 
 def banner():
