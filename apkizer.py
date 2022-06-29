@@ -16,12 +16,14 @@ def main():
     required = parser.add_argument_group('required arguments')
     required.add_argument('-p', required=True, metavar="packagename", help="example: com.twitter.android")
     required.add_argument('--first', required=False, metavar="first", default=True, help="example: true")
+    required.add_argument('--out', required=False, metavar="out", default='.', help="example: /output")
     args = parser.parse_args()
 
     scraper = cloudscraper.create_scraper(delay=10)
     base_url = "https://apkpure.com"
     package_name = args.p
     first = args.first
+    out = args.out
     package_url = ""
     download_version_list = []
     response = scraper.get("https://apkpure.com/tr/search?q=" + package_name).text
@@ -68,7 +70,7 @@ def main():
         print(filename + " is downloading, please wait..")
         file = scraper.get(download_link)
         current_directory = os.getcwd()
-        final_directory = os.path.join(current_directory, package_name)
+        final_directory = os.path.join(out, package_name)
 
         if not os.path.exists(final_directory):
             os.makedirs(final_directory)
