@@ -76,8 +76,9 @@ def main():
 
         filename = os.path.join(final_directory, filename)
         open('filename.txt', 'w').write(filename)
-        if os.path.exists(filename) and zipfile.ZipFile(filename).testzip():
-            print(filename + " exists")
+        print(filename + " exists: " + str(os.path.exists(filename)))
+        if zipfile.ZipFile(filename).testzip():
+            print(filename + " test zip ok")
             return
 
         # delete file if it exists
