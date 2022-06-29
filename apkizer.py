@@ -77,11 +77,11 @@ def main():
         filename = os.path.join(final_directory, filename)
         open('filename.txt', 'w').write(filename)
         print(filename + " exists: " + str(os.path.exists(filename)))
-        if zipfile.ZipFile(filename).testzip():
-            print(filename + " test zip ok")
+        zip_file = zipfile.ZipFile(filename)
+        if zip_file.testzip() is None:
+            print("File already exists!")
             return
 
-        # delete file if it exists
         if os.path.exists(filename):
             os.remove(filename)
         print(filename + " is downloading, please wait..")
