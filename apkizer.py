@@ -75,7 +75,7 @@ def main():
             os.makedirs(final_directory)
 
         filename = os.path.join(final_directory, filename)
-
+        open('filename.txt', 'w').write(filename)
         if os.path.exists(filename) and zipfile.ZipFile(filename).testzip():
             return
 
