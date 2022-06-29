@@ -78,7 +78,7 @@ def main():
         open('filename.txt', 'w').write(filename)
         print(filename + " exists: " + str(os.path.exists(filename)))
         zip_file = zipfile.ZipFile(filename)
-        if zip_file.testzip() is None:
+        if os.path.exists(filename) and zip_file.testzip() is None:
             print("File already exists!")
             return
 
