@@ -66,7 +66,7 @@ def main():
         soup = bs4.BeautifulSoup(download_page, "html.parser")
         download_link = soup.find("iframe", {"id": "iframe_download"}).attrs["src"]
         filename = soup.find("span", {"class": "file"}).text.rsplit(' ', 2)[0].replace(" ", "_").lower()
-        print(filename + " is downloading, please wait..")
+        
         current_directory = os.getcwd()
         # final_directory = os.path.join(out, package_name)
         final_directory = out
@@ -77,12 +77,13 @@ def main():
         filename = os.path.join(final_directory, filename)
         open('filename.txt', 'w').write(filename)
         if os.path.exists(filename) and zipfile.ZipFile(filename).testzip():
+            print(filename + " exists")
             return
 
         # delete file if it exists
         if os.path.exists(filename):
             os.remove(filename)
-
+        print(filename + " is downloading, please wait..")
         file = scraper.get(download_link)
         open(filename, "wb").write(file.content)
 
