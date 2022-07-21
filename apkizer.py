@@ -65,8 +65,14 @@ def main():
     def download_apk(download_page):
         soup = bs4.BeautifulSoup(download_page, "html.parser")
         download_link = soup.find("iframe", {"id": "iframe_download"}).attrs["src"]
-        filename = soup.find("span", {"class": "file"}).text.rsplit(' ', 2)[0].replace(" ", "_").lower()
-        
+        # filename = soup.find("span", {"class": "file"}).text.rsplit(' ', 2)[0].replace(" ", "_").lower()
+
+        ext = ".apk"
+        if "/XAPK/" in download_link:
+            ext = ".xapk"
+
+        body = soup.find("body")
+        filename = body.attrs["data-dt-pkg"] + "_" + body.attrs["data-dt-version"] + ext
         current_directory = os.getcwd()
         # final_directory = os.path.join(out, package_name)
         final_directory = out
