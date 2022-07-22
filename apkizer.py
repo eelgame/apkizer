@@ -15,6 +15,7 @@ def main():
     required = parser.add_argument_group('required arguments')
     required.add_argument('-p', required=True, metavar="packagename", help="example: com.twitter.android")
     required.add_argument('--first', required=False, metavar="first", default=True, help="example: true")
+    required.add_argument('--apk', required=False, metavar="apk", default=True, help="example: true")
     required.add_argument('--out', required=False, metavar="out", default='.', help="example: /output")
     args = parser.parse_args()
 
@@ -22,6 +23,7 @@ def main():
     base_url = "https://apkpure.com"
     package_name = args.p
     first = args.first
+    apk = args.apk
     out = args.out
     package_url = ""
     download_version_list = []
@@ -96,6 +98,9 @@ def main():
         open(filename, "wb").write(file.content)
 
     for apk_url in download_version_list:
+        if apk and not apk_url.endswith('-APK'):
+            continue
+
         download_page = scraper.get(base_url + apk_url).text
         if "Download Variant" in download_page:
             """
