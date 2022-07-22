@@ -103,6 +103,7 @@ def main():
             """
             soup = bs4.BeautifulSoup(download_page, "html.parser")
             apk_url = soup.find("div", {"class": "table-cell down"}).find("a").attrs["href"]
+            print(base_url + apk_url)
             download_page = scraper.get(base_url + apk_url).text
         download_apk(download_page)
         if first:
