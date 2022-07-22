@@ -99,7 +99,7 @@ def main():
 
     for apk_url in download_version_list:
         print(apk_url)
-        if apk and not apk_url.endswith('-APK'):
+        if apk and "-APK" not in apk_url:
             continue
 
         download_page = scraper.get(base_url + apk_url).text
