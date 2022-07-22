@@ -25,7 +25,7 @@ def main():
     out = args.out
     package_url = ""
     download_version_list = []
-    response = scraper.get("https://apkpure.com/tr/search?q=" + package_name).text
+    response = scraper.get("https://apkpure.com/search?q=" + package_name).text
 
     soup = bs4.BeautifulSoup(response, "html.parser")
     a_elements = soup.find_all("a")
