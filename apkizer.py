@@ -57,8 +57,13 @@ def main():
     versions_elements_div = soup.find("ul", attrs={"class": "ver-wrap"})
     versions_elements_li = versions_elements_div.findAll("li", recursive=False)
 
+    exist_apk = False
+    exist_xapk = False
     for list_item in versions_elements_li:
-        download_version_list.append(list_item.find("a").attrs["href"])
+        href = list_item.find("a").attrs["href"]
+        exist_apk = exist_apk or "-APK" in href
+        exist_xapk = exist_xapk or "-XAPK" in href
+        download_version_list.append(href)
 
     """
     Make a list of download pages.
@@ -99,7 +104,7 @@ def main():
 
     for apk_url in download_version_list:
         print(apk_url)
-        if apk and "-APK" not in apk_url:
+        if apk and exist_apk and "-APK" not in apk_url:
             continue
 
         download_page = scraper.get(base_url + apk_url).text
